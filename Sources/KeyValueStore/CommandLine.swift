@@ -83,7 +83,7 @@ extension CommandLine {
                         return
                     }
                     let subComponents = components[1].split(separator: " ", maxSplits: 1)
-                    guard components.count == 2 else {
+                    guard subComponents.count == 2 else {
                         self = .unknown
                         return
                     }
