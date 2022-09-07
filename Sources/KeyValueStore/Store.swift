@@ -36,11 +36,12 @@ class Store {
 
     /// Deletes the value for the given key.
     ///
-    /// NOTE: This will only delete the value on the peek transaction, or in the base one
-    /// if there wasn't any transaction created by the user. This means that if the user attempts
-    /// to delete the value for a key added on a previous transaction, it won't be deleted.
+    /// NOTE: This will delete every instance of the given key. This means that if
+    /// there are nested transaction that have added different values for the given key,
+    /// deleting such key will remove it from every transaction.
     func delete(key: String) {
-        peekOrBase.delete(key: key)
+        transactions.items.forEach { $0.delete(key: key) }
+        base.delete(key: key)
     }
 
     /// Returns the number of keys that have the given value.
@@ -56,10 +57,14 @@ class Store {
 
     /// Complete the current transaction.
     func commit() -> Bool {
-        guard let peek = transactions.pop() else {
+        guard let current = transactions.pop() else {
             return false
         }
-        peekOrBase.commit(transaction: peek)
+        // Merge the transaction to the peek, if any, to have an updated storage on it.
+        transactions.peek()?.merge(transaction: current)
+
+        // Merge the transaction to the base (in case the peek is then rollbacked)
+        base.merge(transaction: current)
         return true
     }
 
@@ -90,7 +95,7 @@ extension Store {
             storage.filter { $1 == value }.count
         }
 
-        func commit(transaction: Transaction) {
+        func merge(transaction: Transaction) {
             storage = storage.merging(transaction.storage) { (_, new) in new }
         }
     }
