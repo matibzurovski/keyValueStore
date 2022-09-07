@@ -12,6 +12,12 @@ You can run and debug the CLI tool from Xcode using the `KeyValueStore` scheme.
 ### Launch directly from Terminal
 An executable file with the last build version can be found under the `Executables` folder. This will run a release version of the tool.
 
+If you get permission denied issues, you can easily generate the executable by yourself following these steps:
+- Open Xcode
+- Select `KeyValueStore on Terminal` scheme and run.
+- Tap on `Product` > `Show Build folder in Finder`
+- Copy the executable file named `KeyValueStore` located under `Products/Debug`
+
 ## Available commands
 The interface has been extended to support two additional commands, as detailed below:
 ```
