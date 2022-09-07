@@ -58,7 +58,7 @@ class CommandLine {
 // MARK: - Option
 
 extension CommandLine {
-    private enum Option {
+    enum Option: Equatable {
         case set(key: String, value: String)
         case get(key: String)
         case delete(key: String)
