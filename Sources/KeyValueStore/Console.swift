@@ -10,14 +10,18 @@ import Foundation
 class Console {
     /// Writes the given message to Console.
     func write(_ message: String, type: WriteType = .standard) {
+        #if DEBUG
+        // When running on DEBUG mode, we will just print the message on Xcode's console.
+        print(message)
+        #else
+        // When running on RELEASE mode, we will set the terminal's text color corresponding to the type.
         switch type {
             case .standard:
-                print(message)
-                // print("\u{001B}[;m\(message)")
+                 print("\u{001B}[;m\(message)")
             case .error:
-                fputs(message, stderr)
-                // fputs("\u{001B}[0;31m\(message)\n", stderr)
+                 fputs("\u{001B}[0;31m\(message)\n\u{001B}[;m", stderr)
         }
+        #endif
     }
 
     /// Reads user input from Console.
